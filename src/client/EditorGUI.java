@@ -25,7 +25,7 @@ import javax.swing.border.EmptyBorder;
  */
 public class EditorGUI extends JFrame {
     private JLabel fileName;
-    private JButton save;
+    private JButton save, addFile;
     
     private JList fileList;
     private JTextArea textArea;
@@ -39,6 +39,14 @@ public class EditorGUI extends JFrame {
         setLayout(new GridBagLayout());
         gbc.insets = new Insets(3, 3, 3, 3);
         
+        addFile = new JButton("Add File");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        add(addFile, gbc);
+        
+        
         fileList = new JList(new String[]{"EditorGUI.java", "Other.txt", "Other.txt", "Other.txt", "Other.txt", "Other.txt", "Other.txt"});
         fileList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         fileList.setLayoutOrientation(JList.VERTICAL);
@@ -47,8 +55,8 @@ public class EditorGUI extends JFrame {
         sp = new JScrollPane(fileList);
         sp.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
         gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridheight = 2;
+        gbc.gridy = 1;
+        gbc.gridheight = 1;
         gbc.gridwidth = 1;
         add(sp, gbc);
         
@@ -72,7 +80,7 @@ public class EditorGUI extends JFrame {
         gbc.gridwidth = 2;
         add(sp2, gbc);
         
-        save = new JButton("Edit?");
+        save = new JButton("Save");
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.gridheight = 1;
@@ -171,9 +179,10 @@ public class EditorGUI extends JFrame {
         fileName.setVisible(false);
         save.setVisible(false);
         sp2.setVisible(false);
-        sp.setPreferredSize(new Dimension(200, getHeight()-54));
+        sp.setPreferredSize(new Dimension(200, getHeight()-86));
         fileName.setPreferredSize(new Dimension(getWidth()-324, 22));
         save.setPreferredSize(new Dimension(80, 26)); 
+        addFile.setPreferredSize(new Dimension(200, 26)); 
         sp2.setPreferredSize(new Dimension(getWidth()-239, getHeight()-86));
         sp.setVisible(true);
         fileName.setVisible(true);
