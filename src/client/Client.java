@@ -1,10 +1,22 @@
 package client;
+
+import javax.swing.JFrame;
+
 /**
  *
  * @author Domas
  */
 public class Client{
+
+
     public static void main(String[] args) {
-        EditorGUI gui = new EditorGUI();
+       // ConnectingGUI cGUI = new ConnectingGUI();
+        //AddFileGUI afGUI = new AddFileGUI();
+       // eGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        EditorGUI eGUI = new EditorGUI();
+        eGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+ 
     }
+    
 }
