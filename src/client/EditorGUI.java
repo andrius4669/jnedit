@@ -7,12 +7,15 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,6 +35,7 @@ public class EditorGUI extends JFrame {
     private JList fileList;
     private JTextArea textArea;
     private JScrollPane sp, sp2;
+    private DefaultListModel fileListModel;
     GridBagConstraints gbc = new GridBagConstraints();
     public EditorGUI(){
         super("Online text editor");
@@ -58,7 +62,14 @@ public class EditorGUI extends JFrame {
         gbc.gridwidth = 1;
         add(deleteFile, gbc);
         
-        fileList = new JList(new String[]{"EditorGUI.java", "Other.txt", "Other.txt", "Other.txt", "Other.txt", "Other.txt", "Other.txt"});
+        fileListModel = new DefaultListModel();
+        fileListModel.addElement("EditorGUI.java");
+        fileListModel.addElement("Other.txt");
+        fileListModel.addElement("Other.txt");
+        fileListModel.addElement("Other.txt");
+        fileListModel.addElement("Other.txt");
+        fileListModel.addElement("Other.txt");
+        fileList = new JList(fileListModel);
         fileList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         fileList.setSelectedIndex(0);
         fileList.setLayoutOrientation(JList.VERTICAL);
@@ -106,6 +117,8 @@ public class EditorGUI extends JFrame {
                     changeComponentsSize(); 
             }
         });
+        addFile.addActionListener(new onClick());
+        deleteFile.addActionListener(new onClick());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         
@@ -197,6 +210,24 @@ public class EditorGUI extends JFrame {
         sp2.setVisible(true);
         addFile.setVisible(true);
         deleteFile.setVisible(true);
+    }
+    public void addFile(String name){
+        fileListModel.addElement(name);
+    }
+    public void deleteFile(int id){
+        fileListModel.remove(id);
+    }
+    private class onClick implements ActionListener{
+        public void actionPerformed(ActionEvent e)
+        {
+            if(e.getSource() == addFile){
+                new AddFileGUI(EditorGUI.this);
+            }
+            if(e.getSource() == deleteFile && !fileList.isSelectionEmpty()){
+                new DeleteFileGUI(EditorGUI.this, fileList.getSelectedIndex());
+            }
+                
+        }
     }
     /*private class Handler implements ActionListener{
         public void actionPerformed(ActionEvent e){
