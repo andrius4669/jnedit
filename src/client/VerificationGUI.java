@@ -29,7 +29,10 @@ package client;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -48,25 +51,32 @@ public class VerificationGUI extends JFrame{
     GridBagConstraints gbc = new GridBagConstraints();
     public VerificationGUI(){
         super("Online text editor");
-        setSize(500, 500);
+        setSize(265, 150);
         setResizable(false);
         setLayout(new GridBagLayout());
+        
+        Toolkit tk = Toolkit.getDefaultToolkit();
+       Dimension screenSize = tk.getScreenSize();
+       setLocation(screenSize.width/2-150, screenSize.height/2-50);
+        
+       Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
+       setIconImage(icon);
         
         title = new JLabel("Administrator mode");
         
         username = new JTextField();
-        username.setPreferredSize(new Dimension(200, 22));
+        username.setPreferredSize(new Dimension(246, 22));
         
         password = new JPasswordField();
-        password.setPreferredSize(new Dimension(200, 22));
+        password.setPreferredSize(new Dimension(246, 22));
         
         submit = new JButton("Sign in");
-        submit.setPreferredSize(new Dimension(100, 22));
+        submit.setPreferredSize(new Dimension(120, 30));
         
-        guestAccess = new JButton("Guest access");
-        guestAccess.setPreferredSize(new Dimension(100, 22));
+        guestAccess = new JButton("Guest mode");
+        guestAccess.setPreferredSize(new Dimension(120, 30));
         
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(3, 3, 3, 3);
         
         gbc.gridwidth = 2;
         add(title, gbc);
