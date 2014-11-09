@@ -5,11 +5,13 @@ import java.awt.Font;
 import static java.awt.Font.PLAIN;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
+import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,7 +27,7 @@ import javax.swing.border.EmptyBorder;
  */
 public class EditorGUI extends JFrame {
     private JLabel fileName;
-    private JButton save, addFile;
+    private JButton save, addFile, deleteFile;
     
     private JList fileList;
     private JTextArea textArea;
@@ -35,20 +37,30 @@ public class EditorGUI extends JFrame {
         super("Online text editor");
         setSize(1000, 800);
         setMinimumSize(new Dimension(600, 400));
-        
+        Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
+        this.setIconImage(icon);
         setLayout(new GridBagLayout());
         gbc.insets = new Insets(3, 3, 3, 3);
         
-        addFile = new JButton("Add File");
+        addFile = new JButton("Add");
+        addFile.setToolTipText("Add new file");
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         add(addFile, gbc);
         
+        deleteFile = new JButton("Delete");
+        deleteFile.setToolTipText("Delete selected file");
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridheight = 1;
+        gbc.gridwidth = 1;
+        add(deleteFile, gbc);
         
         fileList = new JList(new String[]{"EditorGUI.java", "Other.txt", "Other.txt", "Other.txt", "Other.txt", "Other.txt", "Other.txt"});
         fileList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        fileList.setSelectedIndex(0);
         fileList.setLayoutOrientation(JList.VERTICAL);
         fileList.setFont(new Font("Arial", PLAIN, 12));
         fileList.setBorder(new EmptyBorder(5,5, 5, 5));
@@ -57,13 +69,13 @@ public class EditorGUI extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridheight = 1;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         add(sp, gbc);
         
         fileName = new JLabel("EditorGUI.java");
         fileName.setToolTipText("File name");
         fileName.setFont(new Font("Arial", PLAIN, 20));
-        gbc.gridx = 1;
+        gbc.gridx = 2;
         gbc.gridy = 0;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
@@ -74,18 +86,13 @@ public class EditorGUI extends JFrame {
         textArea.setMargin(new Insets(5, 5, 5, 5));
         sp2 = new JScrollPane(textArea);
         sp2.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-        gbc.gridx = 1;
+        gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.gridheight = 1;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 1;
         add(sp2, gbc);
         
-        save = new JButton("Save");
-        gbc.gridx = 2;
-        gbc.gridy = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        add(save, gbc);
+    
        
        //*.addActionListener(new Handler());
         changeComponentsSize();
@@ -177,18 +184,19 @@ public class EditorGUI extends JFrame {
     private void changeComponentsSize(){
         sp.setVisible(false);
         fileName.setVisible(false);
-        save.setVisible(false);
         sp2.setVisible(false);
+        addFile.setVisible(false);
+        deleteFile.setVisible(false);
         sp.setPreferredSize(new Dimension(200, getHeight()-86));
-        fileName.setPreferredSize(new Dimension(getWidth()-324, 22));
-        save.setPreferredSize(new Dimension(80, 26)); 
-        addFile.setPreferredSize(new Dimension(200, 26)); 
+        fileName.setPreferredSize(new Dimension(getWidth()-240, 22));
+        addFile.setPreferredSize(new Dimension(97, 26));
+        deleteFile.setPreferredSize(new Dimension(97, 26)); 
         sp2.setPreferredSize(new Dimension(getWidth()-239, getHeight()-86));
         sp.setVisible(true);
         fileName.setVisible(true);
-        save.setVisible(true);
         sp2.setVisible(true);
-        
+        addFile.setVisible(true);
+        deleteFile.setVisible(true);
     }
     /*private class Handler implements ActionListener{
         public void actionPerformed(ActionEvent e){
