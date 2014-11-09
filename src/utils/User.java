@@ -30,15 +30,14 @@ package utils;
  * @author andrius
  */
 public class User implements UserInt {
-	private String name;
-	private Privilege privilege;
+	private String nick, realname;
 	
 	@Override
-	public String getName() { return name; }
+	public String getNick() { return nick; }
 	@Override
-	public void setName(String n) { name = n; }
+	public void setNick(String n) { nick = n; }
 	@Override
-	public Privilege getPrivilege() { return privilege; }
+	public String getName() { return realname; }
 	@Override
-	public void setPrivilege(Privilege p) { privilege = p; }
+	public void setName(String n) { realname = n; }
 }

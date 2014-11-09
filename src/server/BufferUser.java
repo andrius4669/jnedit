@@ -23,12 +23,16 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-package utils;
+package server;
+
+import utils.*;
 
 /**
- *
  * @author andrius
  */
-public enum Privilege {
-	SPECTATOR, VOICED, OPER, OWNER
+public class BufferUser {
+	private boolean owner;
+	private boolean oper;
+	private boolean voiced;
+	private User usr;
 }

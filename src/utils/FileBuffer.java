@@ -26,9 +26,16 @@
 package utils;
 
 /**
- *
  * @author andrius
  */
-public enum Privilege {
-	SPECTATOR, VOICED, OPER, OWNER
+public class FileBuffer {
+	private String filename;
+	/* TODO maybe use custom stringbuffer class */
+	private final StringBuffer buf = new StringBuffer();
+	
+	public FileBuffer() {}
+	public FileBuffer(String n) { filename = n; }
+	
+	public String getName() { return filename; }
+	public void rename(String n) { filename = n; }
 }
