@@ -3,7 +3,7 @@ package client;
 import javax.swing.JFrame;
 
 /**
- *
+ *ss
  * @author Domas
  */
 public class Client{
