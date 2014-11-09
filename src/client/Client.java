@@ -16,7 +16,7 @@ public class Client{
         
         EditorGUI eGUI = new EditorGUI();
         eGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
- 
+        new VerificationGUI();
     }
     
 }
