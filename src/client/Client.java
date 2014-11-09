@@ -3,7 +3,7 @@ package client;
 import javax.swing.JFrame;
 
 /**
- *ss4
+ *
  * @author Domas
  */
 public class Client{
@@ -16,7 +16,8 @@ public class Client{
         
         EditorGUI eGUI = new EditorGUI();
         eGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        new VerificationGUI();
+       
+        new VerificationGUI(); new ConnectingGUI();
     }
     
 }
