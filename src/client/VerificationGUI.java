@@ -32,6 +32,8 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -44,18 +46,20 @@ import javax.swing.JTextField;
  * @author Domas
  */
 public class VerificationGUI extends JFrame{
-    JLabel title;
-    JTextField username;
-    JPasswordField password;
-    JButton submit, guestAccess;
-    GridBagConstraints gbc = new GridBagConstraints();
-    public VerificationGUI(){
-        super("Online text editor");
-        setSize(265, 150);
-        setResizable(false);
-        setLayout(new GridBagLayout());
+    private JLabel title;
+    private JTextField username;
+    private JPasswordField password;
+    private JButton submit, guestAccess;
+    private GridBagConstraints gbc = new GridBagConstraints();
+    private Client client;
+    public VerificationGUI(Client client){
+       super("Online text editor");
+       this.client = client;
+       setSize(265, 150);
+       setResizable(false);
+       setLayout(new GridBagLayout());
         
-        Toolkit tk = Toolkit.getDefaultToolkit();
+       Toolkit tk = Toolkit.getDefaultToolkit();
        Dimension screenSize = tk.getScreenSize();
        setLocation(screenSize.width/2-150, screenSize.height/2-50);
         
@@ -91,9 +95,19 @@ public class VerificationGUI extends JFrame{
         add(guestAccess, gbc);
         gbc.gridx = 1;
         add(submit, gbc);
-        
+        guestAccess.addActionListener(new onClick());
+        submit.addActionListener(new onClick());
         setVisible(true);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        
+    }
+    private class onClick implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e){
+            if(e.getSource() == guestAccess)
+                client.connect();
+            if(e.getSource() == submit && !username.getText().equals("") && !password.getText().equals(""))
+                client.connect(username.getText(), password.getText());
+        }
         
     }
 }

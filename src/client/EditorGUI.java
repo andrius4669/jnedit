@@ -37,8 +37,10 @@ public class EditorGUI extends JFrame {
     private JScrollPane sp, sp2;
     private DefaultListModel fileListModel;
     GridBagConstraints gbc = new GridBagConstraints();
-    public EditorGUI(){
+    private Client client;
+    public EditorGUI(Client client){
         super("Online text editor");
+        this.client = client;
         setSize(1000, 800);
         setMinimumSize(new Dimension(600, 400));
         Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
