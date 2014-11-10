@@ -1,5 +1,6 @@
 package server;
 
+import java.io.*;
 import java.net.*;
 import java.nio.channels.*;
 import java.util.*;
@@ -10,7 +11,7 @@ public class ServerState {
 	public ServerSocketChannel servsock;
 	public Selector selector;
 	
-	public void PrepareServer(int port)
+	public boolean PrepareServer(int port)
 	{
 		try {
 			/* make socket */
@@ -23,15 +24,25 @@ public class ServerState {
 			selector = Selector.open();
 			/* register socket to selector */
 			servsock.register(selector, SelectionKey.OP_ACCEPT);
-			
 		} catch(Exception e) {
 			servsock = null;
 			selector = null;
+			return false;
 		}
+		return true;
 	}
 	
 	public void ServerLoop()
 	{
-		
+		for(;;) {
+			try { if(selector.select() <= 0) continue; } catch(IOException e) { return; }
+			Set<SelectionKey> selected = selector.selectedKeys();
+			Iterator<SelectionKey> it = selected.iterator();
+			while(it.hasNext()) {
+				SelectionKey key = it.next();
+				
+				/* TODO */
+			}
+		}
 	}
 }
