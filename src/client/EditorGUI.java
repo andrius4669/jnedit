@@ -124,6 +124,7 @@ public class EditorGUI extends JFrame {
         }else{
             addFile.setEnabled(false);
             deleteFile.setEnabled(false);
+            textArea.setEditable(false);
         }
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
