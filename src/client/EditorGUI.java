@@ -106,8 +106,6 @@ public class EditorGUI extends JFrame {
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         add(sp2, gbc);
-        
-    
        
        //*.addActionListener(new Handler());
         changeComponentsSize();
@@ -120,8 +118,13 @@ public class EditorGUI extends JFrame {
         this.addWindowStateListener((WindowEvent e) -> {
             changeComponentsSize();
         });
-        addFile.addActionListener(new onClick());
-        deleteFile.addActionListener(new onClick());
+        if(type == EditorType.EDIT){
+            addFile.addActionListener(new onClick());
+            deleteFile.addActionListener(new onClick());
+        }else{
+            addFile.setEnabled(false);
+            deleteFile.setEnabled(false);
+        }
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         

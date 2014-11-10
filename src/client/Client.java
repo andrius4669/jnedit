@@ -30,7 +30,7 @@ public class Client{
         ConnectingGUI conGUI = new ConnectingGUI();
         conGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        //TO-DO: connection with server\
+        //TO-DO: connection with server
         
         //IF Connection success
         conGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -43,13 +43,7 @@ public class Client{
         conGUI.connectionFailed();
     }
     public static void main(String[] args) {
-       // ConnectingGUI cGUI = new ConnectingGUI();
-        //AddFileGUI afGUI = new AddFileGUI();
-       // eGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-    
-       
-        //new VerificationGUI(); new ConnectingGUI();
+        new Client();
     }
     
 }
