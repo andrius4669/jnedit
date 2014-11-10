@@ -46,12 +46,12 @@ import javax.swing.JTextField;
  * @author Domas
  */
 public class VerificationGUI extends JFrame{
-    private JLabel title;
-    private JTextField username;
-    private JPasswordField password;
-    private JButton submit, guestAccess;
-    private GridBagConstraints gbc = new GridBagConstraints();
-    private Client client;
+    private final JLabel title;
+    private final JTextField username;
+    private final JPasswordField password;
+    private final JButton submit, guestAccess;
+    private final GridBagConstraints gbc = new GridBagConstraints();
+    private final Client client;
     public VerificationGUI(Client client){
        super("Online text editor");
        this.client = client;
