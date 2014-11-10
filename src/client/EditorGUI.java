@@ -29,16 +29,20 @@ import javax.swing.border.EmptyBorder;
  * @author Domas
  */
 public class EditorGUI extends JFrame {
-    private JLabel fileName;
-    private JButton save, addFile, deleteFile;
+    private final JLabel fileName;
+    private final JButton addFile, deleteFile;
     
-    private JList fileList;
-    private JTextArea textArea;
-    private JScrollPane sp, sp2;
-    private DefaultListModel fileListModel;
+    private final JList fileList;
+    private final JTextArea textArea;
+    private final JScrollPane sp, sp2;
+    private final DefaultListModel fileListModel;
     GridBagConstraints gbc = new GridBagConstraints();
-    public EditorGUI(){
+    private final Client client;
+    private final EditorType type;
+    public EditorGUI(Client client, EditorType type){
         super("Online text editor");
+        this.client = client;
+        this.type = type;
         setSize(1000, 800);
         setMinimumSize(new Dimension(600, 400));
         Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
@@ -108,14 +112,13 @@ public class EditorGUI extends JFrame {
        //*.addActionListener(new Handler());
         changeComponentsSize();
         this.addComponentListener(new ComponentAdapter() {
+            @Override
             public void componentResized(ComponentEvent e) {
                  changeComponentsSize(); 
             }
         });
-        this.addWindowStateListener(new WindowStateListener() {
-            public void windowStateChanged(WindowEvent e) {
-                    changeComponentsSize(); 
-            }
+        this.addWindowStateListener((WindowEvent e) -> {
+            changeComponentsSize();
         });
         addFile.addActionListener(new onClick());
         deleteFile.addActionListener(new onClick());

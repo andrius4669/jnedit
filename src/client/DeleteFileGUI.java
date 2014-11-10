@@ -18,11 +18,11 @@ import javax.swing.JLabel;
  * @author Domas
  */
 public class DeleteFileGUI extends JFrame{
-    private JLabel title;
-    private JButton yes, no;
-    private GridBagConstraints gbc = new GridBagConstraints();
-    private EditorGUI editor;
-    private int fileId;
+    private final JLabel title;
+    private final JButton yes, no;
+    private final GridBagConstraints gbc = new GridBagConstraints();
+    private final EditorGUI editor;
+    private final int fileId;
     public DeleteFileGUI(EditorGUI eGUI, int id){
        super("Delete File");
        editor = eGUI;
