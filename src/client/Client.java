@@ -13,12 +13,34 @@ public class Client{
         verGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     public void connect(){
+        ConnectingGUI conGUI = new ConnectingGUI();
+        conGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
         //TO-DO: connection with server
+
+        //IF Connection success
+        conGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        conGUI.setVisible(false);
+        conGUI.dispose();
         editor = new EditorGUI(this, EditorType.VIEW);
+        //ELSE
+        conGUI.connectionFailed();
     }
     public void connect(String username, String password){
-        //TO-DO: connection with server
-        editor = new EditorGUI(this, EditorType.EDIT);
+        ConnectingGUI conGUI = new ConnectingGUI();
+        conGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        //TO-DO: connection with server\
+        
+        //IF Connection success
+        conGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        conGUI.setVisible(false);
+        conGUI.dispose();
+        editor = new EditorGUI(this, EditorType.VIEW);
+        //ELSE IF Wrong username or password
+        conGUI.badUserData();
+        //ELSE
+        conGUI.connectionFailed();
     }
     public static void main(String[] args) {
        // ConnectingGUI cGUI = new ConnectingGUI();

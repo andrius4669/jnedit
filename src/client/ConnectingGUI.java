@@ -17,12 +17,11 @@ import javax.swing.JLabel;
  * @author Domas
  */
 public class ConnectingGUI extends JFrame{
-    GridBagConstraints gbc = new GridBagConstraints();
-    JLabel msg[] = new JLabel[2];
+    private final GridBagConstraints gbc = new GridBagConstraints();
+    private final JLabel msg[] = new JLabel[2];
     public ConnectingGUI(){
-  
         super("Online text editor");
-      
+              
         setSize(300, 100);
         
         setResizable(false);
@@ -50,6 +49,14 @@ public class ConnectingGUI extends JFrame{
         
         setVisible(true);
         animation(0);
+    }
+    public void connectionFailed(){
+        msg[0].setText("Error!");
+        msg[1].setText("Could not connect to server!");
+    }
+    public void badUserData(){
+        msg[0].setText("Error!");
+        msg[1].setText("Wrong administrator username or password!");
     }
     private void animation(int i){
         
