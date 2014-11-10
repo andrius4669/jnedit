@@ -31,5 +31,35 @@ package utils;
  * @author Domas
  */
 public class TextFile {
+    private String name;
+    private String text;
     
+    public TextFile(String name, String text){
+        this.name = name;
+        this.text = text;
+    }
+    public TextFile(String name){
+        this(name, "");
+    }
+    public String getName(){
+        return name;
+    }
+    public String getText(){
+        return text;
+    }
+    public void setName(String name){
+        this.name = name;
+    }
+    public void setText(String text){
+        this.text = text;
+    }
+    public void insert(int at, String text){
+        if(at < 0 || at > this.text.length()) return;
+        this.text = this.text.substring(0, at)+text+this.text.substring(at);
+    }
+    public void erase(int start, int end){
+        if(start < 0 || end < 0 || start > text.length() || end > text.length()) return;
+        this.text = ((start != 0) ? this.text.substring(0, start):"")+text.substring(end);   
+    }
+
 }
