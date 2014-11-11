@@ -43,7 +43,9 @@ public class Client{
         conGUI.connectionFailed();
     }
     public static void main(String[] args) {
-        new Client();
+        Client client = new Client();
+       // EditorGUI eGUI = new EditorGUI(client, EditorType.EDIT);
+        
     }
     
 }
