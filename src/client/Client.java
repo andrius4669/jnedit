@@ -1,6 +1,7 @@
 package client;
 
 import javax.swing.JFrame;
+import utils.EpicList;
 
 /**
  *
@@ -43,7 +44,12 @@ public class Client{
         conGUI.connectionFailed();
     }
     public static void main(String[] args) {
-        Client client = new Client();
+       // Client client = new Client();
+        EpicList<String> test = new EpicList<String>();
+        test.add("vienas");
+        test.add("du");
+  
+                
        // EditorGUI eGUI = new EditorGUI(client, EditorType.EDIT);
         
     }

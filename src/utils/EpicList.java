@@ -35,14 +35,13 @@ import java.util.ListIterator;
  *
  * @author Domas
  */
-public class EpicList<E> implements List{
+public class EpicList<E> implements Iterable<E>, Cloneable{
     private Node<E> f,l,c;
     //TO-DO: A LOT!
     public EpicList(){
         f = l = c = null;
     }
 
-    @Override
     public int size() {
         Node<E> temp = f;
         int result = 0;
@@ -53,12 +52,10 @@ public class EpicList<E> implements List{
         return result; 
     }
 
-    @Override
     public boolean isEmpty() {
         return f == null;
     }
 
-    @Override
     public boolean contains(Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -68,101 +65,103 @@ public class EpicList<E> implements List{
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public Object[] toArray() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public Object[] toArray(Object[] a) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public boolean add(Object e) {
         if(f == null) 
-            f = l = new Node(e, null);
-        else 
-            f = new Node(e, f);
+            f = l = new Node(e, null, null);
+        else
+            l = new Node(e, null, l);
+        
         return true;
     }
 
-    @Override
     public boolean remove(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for(Node<E> temp = f; temp != null; temp = temp.next){
+            if(temp.e == o){
+                if  (temp == f)  f = temp.next;
+                if  (temp == l)  l = temp.back;
+                temp.back.next = temp.next;
+                temp.next.back = temp.back;
+                return true;
+            }
+        }
+        return false;
     }
 
-    @Override
     public boolean containsAll(Collection c) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public boolean addAll(Collection c) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public boolean addAll(int index, Collection c) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public boolean removeAll(Collection c) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public boolean retainAll(Collection c) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public void clear() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public Object get(int index) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public Object set(int index, Object element) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
     public void add(int index, Object element) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
+   
     public Object remove(int index) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
+   
     public int indexOf(Object o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int id = 0;
+        for(Node<E> temp = f; temp != null; temp = temp.next){
+            if(temp.e == o) return id;
+            id++;
+        }
+        return id;
     }
 
-    @Override
+ 
     public int lastIndexOf(Object o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
+ 
     public ListIterator listIterator() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
+
     public ListIterator listIterator(int index) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
+
     public List subList(int fromIndex, int toIndex) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -170,9 +169,12 @@ public class EpicList<E> implements List{
     private static class Node<E>{
         private E e;
         private Node<E> next; 
-        Node(E e, Node<E> next) {
+        private Node<E> back;
+        Node(E e, Node<E> next, Node<E> back) {
             this.e = e;
             this.next = next;
+            if(back != null) back.next = Node.this;
+            if(next != null) next.back = Node.this;
         }
     }
 
