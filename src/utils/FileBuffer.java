@@ -30,7 +30,7 @@ package utils;
  */
 public class FileBuffer {
 	private String filename;
-	private final StringBuffer buf = new StringBuffer();
+	public final StringBuffer buf = new StringBuffer();
 	
 	public FileBuffer() {}
 	public FileBuffer(String n) { filename = n; }
@@ -38,5 +38,38 @@ public class FileBuffer {
 	public String getName() { return filename; }
 	public void rename(String n) { filename = n; }
 	
+	void parseEscapedText(String text) {
+		buf.delete(0, buf.length());	/* clear */
+		for(int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			if(c != '\\') buf.append(c);
+			else
+			{
+				i++;
+				if(i >= text.length()) break;
+				c = text.charAt(i);
+				switch(c) {
+					case 'n': buf.append('\n'); break;
+					case 't': buf.append('\t'); break;
+					case 's': buf.append(' '); break;
+					default: buf.append(c); break;	/* for \\ */
+				}
+			}
+		}
+	}
 	
+	public void putEscapedText(StringBuilder sb)
+	{
+		for(int i = 0; i < buf.length(); i++) {
+			char c = buf.charAt(i);
+			switch(c)
+			{
+				case '\n': sb.append("\\n"); break;
+				case '\t': sb.append("\\t"); break;
+				case ' ': sb.append("\\s"); break;
+				case '\\': sb.append("\\\\"); break;
+				default: sb.append(c); break;
+			}
+		}
+	}
 }

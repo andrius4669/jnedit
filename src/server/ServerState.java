@@ -15,11 +15,21 @@ public class ServerState {
 	private String genBufList()
 	{
 		String s = new String();
-		s += "buflist clean\n";
+		s += "buflistclean\n";
 		for(ServerBuffer b: buffers) {
 			s += String.format("buflist %s\n", b.getName());
 		}
 		return s;
+	}
+	
+	private String genClientsList()
+	{
+		StringBuffer sb = new StringBuffer();
+		sb.append("clientlistclean\n");
+		for(ServerClient sc: clients) {
+			sb.append(String.format("clientlist %s <%s>\n", sc.isOper() ? "o" : "n", sc.getName()));
+		}
+		return sb.toString();
 	}
 	
 	public boolean PrepareServer(int port)
@@ -55,9 +65,50 @@ public class ServerState {
 		}
 	}
 	
-	void clientCommand(ServerClient c, String cmd)
+	private void broadcast(String str, ServerClient except)
 	{
-		System.out.printf("cmd: %s\n", cmd);
+		for(ServerClient sc: clients) if(sc != except) sendString(sc.sock, str);
+	}
+	
+	private void clientCommand(ServerClient c, String ccmd)
+	{
+		Scanner ss = new Scanner(ccmd);
+		if(!ss.hasNext()) return;
+		String cmdname = ss.next();
+		switch(cmdname) {
+			case "ping":
+				sendString(c.sock, "pong");
+				break;
+			case "name":
+				if(ss.hasNext())
+				{
+					String newname = ss.next();
+					broadcast(String.format("rename %s %s", c.getNick(), newname), c);
+					c.setName(newname);
+				}
+				break;
+			case "getf":
+				if(ss.hasNext())
+				{
+					String fname = ss.next();
+					ServerBuffer buf = null;
+					for(ServerBuffer b: buffers)
+					{
+						if(b.getName().equals(fname)) buf = b;
+					}
+					if(buf == null) break;
+					c.addSubscription(fname);
+					sendString(c.sock, buf.getSendCommand());
+				}
+				break;
+			case "closef":
+				if(ss.hasNext())
+				{
+					String fname = ss.next();
+					c.unsubscribe(fname);
+				}
+				break;
+		}
 	}
 	
 	public void checkClientBuffer(ServerClient c)
@@ -105,6 +156,7 @@ public class ServerState {
 					try { clientsock.register(selector, SelectionKey.OP_READ, client); }
 					catch(IOException e) { System.out.println(e.toString()); continue; }
 					sendString(clientsock, genBufList());
+					sendString(clientsock, genClientsList());
 				}
 				if(key.isReadable()) {
 					SocketChannel sock = (SocketChannel)key.channel();
@@ -121,7 +173,7 @@ public class ServerState {
 						client.buf.append(ss);
 						checkClientBuffer(client);
 					}
-					else if(bread < 0)
+					if(bread < 0)
 					{
 						clients.remove(client);
 						key.cancel();
