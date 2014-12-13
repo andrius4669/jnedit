@@ -30,7 +30,6 @@ package utils;
  */
 public class FileBuffer {
 	private String filename;
-	/* TODO maybe use custom stringbuffer class */
 	private final StringBuffer buf = new StringBuffer();
 	
 	public FileBuffer() {}
@@ -38,4 +37,6 @@ public class FileBuffer {
 	
 	public String getName() { return filename; }
 	public void rename(String n) { filename = n; }
+	
+	
 }
