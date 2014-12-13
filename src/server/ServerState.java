@@ -70,11 +70,23 @@ public class ServerState {
 		for(ServerClient sc: clients) if(sc != except) sendString(sc.sock, str);
 	}
 	
+	private void broadcastln(String str, ServerClient except) {
+		for(ServerClient sc: clients) if(sc != except) {
+			sendString(sc.sock, str);
+			sendString(sc.sock, "\n");
+		}
+	}
+	
+	private ServerBuffer findBuf(String name) {
+		for(ServerBuffer buf: buffers) if(buf.getName().equals(name)) return buf;
+		return null;
+	}
+	
 	private void clientCommand(ServerClient c, String ccmd)
 	{
 		if(ccmd.length() <= 0) return;
 		int space = ccmd.indexOf(' ');
-		String cmdname = ccmd.substring(0, space >= 0 ? space : ccmd.length());
+		String cmdname = ccmd.substring(0, space >= 0 ? space : ccmd.length()).toLowerCase();
 		if(cmdname.length() <= 0) return;
 		String arg = ccmd.substring(space >= 0 ? space + 1 : ccmd.length());
 		switch(cmdname) {
@@ -108,11 +120,7 @@ public class ServerState {
 				if(ss.hasNext())
 				{
 					String fname = ss.next();
-					ServerBuffer buf = null;
-					for(ServerBuffer b: buffers)
-					{
-						if(b.getName().equals(fname)) buf = b;
-					}
+					ServerBuffer buf = findBuf(fname);
 					if(buf == null)
 					{
 						if(!cmdname.equals("makef")) break;
@@ -128,6 +136,45 @@ public class ServerState {
 			case "closef":
 				c.unsubscribe(arg);
 				break;
+			case "efclean":
+			{
+				if(!c.isSubscribing(arg)) break;
+				ServerBuffer buf = findBuf(arg);
+				if(buf == null) break;
+				buf.clearText();
+				broadcastln(ccmd, c);
+				break;
+			}
+			case "efadd":
+			{
+				Scanner ss = new Scanner(arg);
+				if(!ss.hasNext()) break;
+				String fname = ss.next();
+				if(!c.isSubscribing(fname)) break;
+				ServerBuffer buf = findBuf(fname);
+				if(buf == null) break;
+				if(!ss.hasNext()) break;
+				String text = ss.next();
+				buf.parseEscapedText(text);
+				broadcastln(ccmd, c);
+				break;
+			}
+			case "efins":
+			{
+				Scanner ss = new Scanner(arg);
+				if(!ss.hasNext()) break;
+				String fname = ss.next();
+				if(!c.isSubscribing(fname)) break;
+				ServerBuffer buf = findBuf(fname);
+				if(buf == null) break;
+				if(!ss.hasNext()) break;
+				int inspos = ss.nextInt();
+				if(!ss.hasNext()) break;
+				String text = ss.next();
+				buf.unescapeAndInsert(inspos, text);
+				broadcastln(ccmd, c);
+				break;
+			}
 		}
 	}
 	

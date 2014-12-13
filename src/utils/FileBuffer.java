@@ -38,8 +38,42 @@ public class FileBuffer {
 	public String getName() { return filename; }
 	public void rename(String n) { filename = n; }
 	
-	void parseEscapedText(String text) {
-		buf.delete(0, buf.length());	/* clear */
+	public void clearText() {
+		buf.delete(0, buf.length());
+	}
+	
+	public void remove(int start, int len) {
+		if(start < 0 || start >= buf.length()) return;
+		if(len > 0) len = start + len;
+		else len = buf.length();
+		if(len < start) return;
+		if(len > buf.length()) len = buf.length();
+		buf.delete(start, len);
+	}
+	
+	public void unescapeAndInsert(int start, String text) {
+		if(start < 0) start = 0;
+		if(start > buf.length()) start = buf.length();
+		for(int i = 0; i < text.length(); i++) {
+			char c = text.charAt(i);
+			if(c != '\\') { buf.insert(start, c); start++; }
+			else
+			{
+				i++;
+				if(i >= text.length()) break;
+				c = text.charAt(i);
+				switch(c) {
+					case 'n': buf.insert(start, '\n'); break;
+					case 't': buf.insert(start, '\t'); break;
+					case 's': buf.insert(start, ' '); break;
+					default: buf.insert(start, c); break;	/* for \\ */
+				}
+				start++;
+			}
+		}
+	}
+	
+	public void parseEscapedText(String text) {
 		for(int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
 			if(c != '\\') buf.append(c);
@@ -56,6 +90,7 @@ public class FileBuffer {
 				}
 			}
 		}
+
 	}
 	
 	public void putEscapedText(StringBuilder sb)
