@@ -14,20 +14,20 @@ public class ServerState {
 	
 	private String genBufList()
 	{
-		String s = new String();
-		s += "buflistclean\n";
+		StringBuilder s = new StringBuilder();
+		s.append("buflistclean\n");
 		for(ServerBuffer b: buffers) {
-			s += String.format("buflist %s\n", b.getName());
+			s.append(String.format("buflist %s\n", b.getName()));
 		}
-		return s;
+		return s.toString();
 	}
 	
 	private String genClientsList()
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("clientlistclean\n");
 		for(ServerClient sc: clients) {
-			sb.append(String.format("clientlist %s <%s>\n", sc.isOper() ? "o" : "n", sc.getName()));
+			if(sc.getNick() != null) sb.append(String.format("clientlist %s %s\n", sc.isOper() ? "o" : "n", sc.getNick()));
 		}
 		return sb.toString();
 	}
@@ -72,22 +72,39 @@ public class ServerState {
 	
 	private void clientCommand(ServerClient c, String ccmd)
 	{
-		Scanner ss = new Scanner(ccmd);
-		if(!ss.hasNext()) return;
-		String cmdname = ss.next();
+		if(ccmd.length() <= 0) return;
+		int space = ccmd.indexOf(' ');
+		String cmdname = ccmd.substring(0, space >= 0 ? space : ccmd.length());
+		if(cmdname.length() <= 0) return;
+		String arg = ccmd.substring(space >= 0 ? space + 1 : ccmd.length());
 		switch(cmdname) {
 			case "ping":
-				sendString(c.sock, "pong");
+			{
+				if(arg.length() > 0) sendString(c.sock, String.format("pong %s\n", arg));
+				else sendString(c.sock, "pong\n");
 				break;
+			}
 			case "name":
+			{
+				Scanner ss = new Scanner(arg);
 				if(ss.hasNext())
 				{
 					String newname = ss.next();
-					broadcast(String.format("rename %s %s", c.getNick(), newname), c);
-					c.setName(newname);
+					if(c.getNick() != null)
+						broadcast(String.format("rename %s %s\n", c.getNick(), newname), c);
+					else
+						broadcast(String.format("join %s\n", newname), c);
+					c.setNick(newname);
 				}
 				break;
+			}
+			case "wall":
+				broadcast(String.format("wall %s\n", arg), c);
+				break;
 			case "getf":
+			case "makef":
+			{
+				Scanner ss = new Scanner(arg);
 				if(ss.hasNext())
 				{
 					String fname = ss.next();
@@ -96,19 +113,26 @@ public class ServerState {
 					{
 						if(b.getName().equals(fname)) buf = b;
 					}
-					if(buf == null) break;
+					if(buf == null)
+					{
+						if(!cmdname.equals("makef")) break;
+						buf = new ServerBuffer(fname);
+						buffers.add(buf);
+						broadcast(String.format("makef %s\n", fname), null);
+					}
 					c.addSubscription(fname);
 					sendString(c.sock, buf.getSendCommand());
 				}
 				break;
+			}
 			case "closef":
-				if(ss.hasNext())
-				{
-					String fname = ss.next();
-					c.unsubscribe(fname);
-				}
+				c.unsubscribe(arg);
 				break;
 		}
+	}
+	
+	void clientLeft(ServerClient c) {
+		if(c.getNick() != null) broadcast(String.format("leave %s\n", c.getNick()), c);
 	}
 	
 	public void checkClientBuffer(ServerClient c)
@@ -175,6 +199,7 @@ public class ServerState {
 					}
 					if(bread < 0)
 					{
+						clientLeft(client);
 						clients.remove(client);
 						key.cancel();
 						try { sock.close(); }

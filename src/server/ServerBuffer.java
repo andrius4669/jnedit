@@ -6,6 +6,8 @@ import utils.*;
  * @author andrius
  */
 public class ServerBuffer extends FileBuffer {
+	ServerBuffer() { super(); }
+	ServerBuffer(String name) { super(name); }
 	public String getSendCommand()
 	{
 		StringBuilder sb = new StringBuilder();
