@@ -22,8 +22,6 @@ public class ServerState {
 		return s;
 	}
 	
-	
-	
 	public boolean PrepareServer(int port)
 	{
 		try {
@@ -50,13 +48,16 @@ public class ServerState {
 		ByteBuffer b = ByteBuffer.allocate(1500);
 		b.clear();
 		b.put(str.getBytes());
-		try { s.write(b); }
-		catch(IOException e) {}
+		b.flip();
+		while(b.hasRemaining()) {
+			try { s.write(b); }
+			catch(IOException e) {}
+		}
 	}
 	
 	void clientCommand(ServerClient c, String cmd)
 	{
-		System.out.println(cmd);
+		System.out.printf("cmd: %s\n", cmd);
 	}
 	
 	public void checkClientBuffer(ServerClient c)
@@ -84,42 +85,49 @@ public class ServerState {
 	public void ServerLoop()
 	{
 		for(;;) {
-			try { if(selector.select() <= 0) continue; } catch(IOException e) { return; }
+			try { selector.select(); }
+			catch(IOException e) { System.out.println(e.toString()); return; }
 			Set<SelectionKey> selected = selector.selectedKeys();
 			Iterator<SelectionKey> it = selected.iterator();
 			while(it.hasNext()) {
 				SelectionKey key = it.next();
+				it.remove();
 				if(key.isAcceptable()) {
 					SocketChannel clientsock;
 					try { clientsock = ((ServerSocketChannel)key.channel()).accept(); }
-					catch(IOException e) { continue; }
+					catch(IOException e) { System.out.println(e.toString()); continue; }
 					if(clientsock == null) continue;
 					try { clientsock.configureBlocking(false); }
-					catch(IOException e) { continue; }
+					catch(IOException e) { System.out.println(e.toString()); continue; }
 					ServerClient client = new ServerClient();
 					client.sock = clientsock;
 					clients.add(client);
 					try { clientsock.register(selector, SelectionKey.OP_READ, client); }
-					catch(IOException e) { continue; }
+					catch(IOException e) { System.out.println(e.toString()); continue; }
 					sendString(clientsock, genBufList());
 				}
-				else if(key.isReadable()) {
+				if(key.isReadable()) {
 					SocketChannel sock = (SocketChannel)key.channel();
 					ServerClient client = (ServerClient)key.attachment();
-					ByteBuffer b = ByteBuffer.allocate(1500);
+					byte buf[] = new byte[1500];
+					ByteBuffer b = ByteBuffer.wrap(buf);
 					int bread;
 					b.clear();
 					try { bread = sock.read(b); }
-					catch(Exception e) { continue; }
-					if(bread > 0) client.buf.append(b.asCharBuffer());
+					catch(Exception e) { System.out.println(e.toString()); continue; }
+					if(bread > 0)
+					{
+						String ss = new String(buf, 0, bread);
+						client.buf.append(ss);
+						checkClientBuffer(client);
+					}
 					else if(bread < 0)
 					{
 						clients.remove(client);
 						key.cancel();
 						try { sock.close(); }
-						catch(Exception e) {}
+						catch(Exception e) { System.out.println(e.toString()); }
 					}
-					checkClientBuffer(client);
 				}
 			}
 		}
