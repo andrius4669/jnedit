@@ -1,5 +1,7 @@
 package client;
 
+import java.io.*;
+import java.net.*;
 import javax.swing.JFrame;
 import utils.EpicList;
 
@@ -9,6 +11,7 @@ import utils.EpicList;
  */
 public class Client{
     EditorGUI editor;
+    Socket csock;
     public Client(){
         VerificationGUI verGUI = new VerificationGUI(this);
         verGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -18,14 +21,18 @@ public class Client{
         conGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         //TO-DO: connection with server
+	try { csock = new Socket("jnedit.andrius4669.org", 61337); }
+	catch(UnknownHostException e) { csock = null; }
+	catch(IOException e) { csock = null; }
 
-        //IF Connection success
-        conGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        conGUI.setVisible(false);
-        conGUI.dispose();
-        editor = new EditorGUI(this, EditorType.VIEW);
-        //ELSE
-        conGUI.connectionFailed();
+        if(csock != null) {
+		conGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		conGUI.setVisible(false);
+		conGUI.dispose();
+		editor = new EditorGUI(this, EditorType.VIEW);
+	} else {
+		conGUI.connectionFailed();
+	}
     }
     public void connect(String username, String password){
         ConnectingGUI conGUI = new ConnectingGUI();

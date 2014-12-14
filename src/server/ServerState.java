@@ -175,6 +175,22 @@ public class ServerState {
 				broadcastln(ccmd, c);
 				break;
 			}
+			case "efdel":
+			{
+				Scanner ss = new Scanner(arg);
+				if(!ss.hasNext()) break;
+				String fname = ss.next();
+				if(!c.isSubscribing(fname)) break;
+				ServerBuffer buf = findBuf(fname);
+				if(buf == null) break;
+				if(!ss.hasNext()) break;
+				int delpos = ss.nextInt();
+				if(!ss.hasNext()) break;
+				int dellen = ss.nextInt();
+				buf.remove(delpos, dellen);
+				broadcastln(ccmd, c);
+				break;
+			}
 		}
 	}
 	
