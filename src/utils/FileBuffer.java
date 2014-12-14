@@ -73,6 +73,7 @@ public class FileBuffer {
 		}
 	}
 	
+	/* unescapes and adds text to teh end */
 	public void parseEscapedText(String text) {
 		for(int i = 0; i < text.length(); i++) {
 			char c = text.charAt(i);
@@ -93,6 +94,7 @@ public class FileBuffer {
 
 	}
 	
+	/* filebuffer -> escape shit -> string builder */
 	public void putEscapedText(StringBuilder sb)
 	{
 		for(int i = 0; i < buf.length(); i++) {

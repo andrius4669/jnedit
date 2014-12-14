@@ -159,6 +159,21 @@ public class ServerState {
 				broadcastln(ccmd, c);
 				break;
 			}
+			case "efsend":
+			{
+				Scanner ss = new Scanner(arg);
+				if(!ss.hasNext()) break;
+				String fname = ss.next();
+				if(!c.isSubscribing(fname)) break;
+				ServerBuffer buf = findBuf(fname);
+				if(buf == null) break;
+				if(!ss.hasNext()) break;
+				String text = ss.next();
+				buf.clearText();
+				buf.parseEscapedText(text);
+				broadcastln(ccmd, c);
+				break;
+			}
 			case "efins":
 			{
 				Scanner ss = new Scanner(arg);
@@ -237,6 +252,8 @@ public class ServerState {
 					if(clientsock == null) continue;
 					try { clientsock.configureBlocking(false); }
 					catch(IOException e) { System.out.println(e.toString()); continue; }
+					try { clientsock.socket().setKeepAlive(true); } catch(Exception e) {}
+					try { clientsock.socket().setTcpNoDelay(true); } catch(Exception e) {}
 					ServerClient client = new ServerClient();
 					client.sock = clientsock;
 					clients.add(client);
