@@ -81,7 +81,9 @@ public class Client{
 				FileBuffer buf = findBuf(arg);
 				if(buf == null) break;
 				buf.clearText();
-				/* todo for domas: show changes */
+                                String openedFile = editor.getOpenedFileName();
+				if(openedFile != null && openedFile.equals(buf.getName()))
+                                    editor.updateOpenedFile(buf);
 				break;
 			}
 			case "efadd":
@@ -95,7 +97,9 @@ public class Client{
 				if(!ss.hasNext()) break;
 				String text = ss.next();
 				buf.parseEscapedText(text);
-				/* TODO for domas: show changes */
+				String openedFile = editor.getOpenedFileName();
+				if(openedFile != null && openedFile.equals(buf.getName()))
+                                    editor.updateOpenedFile(buf);
 				break;
 			}
 			case "efsend":
@@ -110,7 +114,9 @@ public class Client{
 				String text = ss.next();
 				buf.clearText();
 				buf.parseEscapedText(text);
-				/* TODO for domas: show changes */
+				String openedFile = editor.getOpenedFileName();
+				if(openedFile != null && openedFile.equals(buf.getName()))
+                                    editor.updateOpenedFile(buf);
 				break;
 			}
 
@@ -127,7 +133,9 @@ public class Client{
 				if(!ss.hasNext()) break;
 				String text = ss.next();
 				buf.unescapeAndInsert(inspos, text);
-				/* TODO for domas: show */
+				String openedFile = editor.getOpenedFileName();
+				if(openedFile != null && openedFile.equals(buf.getName()))
+                                    editor.updateOpenedFile(buf);
 				break;
 			}
 			case "efdel":
@@ -143,7 +151,9 @@ public class Client{
 				if(!ss.hasNext()) break;
 				int dellen = ss.nextInt();
 				buf.remove(delpos, dellen);
-				/* TODO for domas: show */
+				String openedFile = editor.getOpenedFileName();
+				if(openedFile != null && openedFile.equals(buf.getName()))
+                                    editor.updateOpenedFile(buf);
 				break;
 			}
 			case "leave":
@@ -151,8 +161,7 @@ public class Client{
 				for(int i = users.size()-1; i >= 0; i--) {
 					User u = users.get(i);
 					if(u.getNick().equals(arg)) users.remove(i);
-				}
-				/* todo show in gui */
+                                }
 				break;
 			}
 			case "join":
@@ -188,14 +197,16 @@ public class Client{
 				break;
 			}
 			case "buflistclean":
-				/* todo show in gui */
+				
 				sfiles.clear();
 				files.clear();
+                                editor.updateFileList();
 				break;
 			case "buflist":
 			{
-				/* todo show in gui */
+				
 				files.add(new FileBuffer(arg));
+                                editor.updateFileList();
 				break;
 			}
 			case "makef":
@@ -204,7 +215,7 @@ public class Client{
 				for(FileBuffer f: files) if(f.getName().equals(arg)) { found = true; break; }
 				if(found) break;
 				files.add(new FileBuffer(arg));
-				/* TODO show in gui */
+				editor.updateFileList();
 				break;
 			}
 		}
@@ -287,8 +298,8 @@ public class Client{
 	    return true;
     }
     public boolean connect(){
-        editor = new EditorGUI(this, EditorType.VIEW);
-	try { csock = new Socket("localhost", 61337); }
+
+	try { csock = new Socket("192.168.0.23", 61337); }
 	catch(UnknownHostException e) { csock = null; }
 	catch(IOException e) { csock = null; }
 
@@ -299,8 +310,14 @@ public class Client{
         return false;
     }
     public boolean connect(String username){
-        editor = new EditorGUI(this, EditorType.EDIT);
-	try { csock = new Socket("localhost", 61337); }
+       /* editor = new EditorGUI(this, EditorType.EDIT);
+        editor.addFile("SDFSD");
+        editor.addFile("SDFSDs");
+        files.get(0).parseEscapedText("ghf");
+        files.get(1).parseEscapedText("gsdfsdfsdfhf");
+        editor.updateFileList();
+        return false;*/
+	try { csock = new Socket("192.168.0.23", 61337); }
 	catch(UnknownHostException e) { csock = null; }
 	catch(IOException e) { csock = null; }
 

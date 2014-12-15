@@ -12,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -24,6 +23,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import utils.FileBuffer;
 /**
  *
  * @author Domas
@@ -67,7 +69,8 @@ public class EditorGUI extends JFrame {
         add(deleteFile, gbc);
         
         fileListModel = new DefaultListModel();
-        updateFileList();
+        
+        
         fileList = new JList(fileListModel);
         fileList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         fileList.setSelectedIndex(0);
@@ -82,7 +85,7 @@ public class EditorGUI extends JFrame {
         gbc.gridwidth = 2;
         add(sp, gbc);
         
-        fileName = new JLabel("EditorGUI.java");
+        fileName = new JLabel("...");
         fileName.setToolTipText("File name");
         fileName.setFont(new Font("Arial", PLAIN, 20));
         gbc.gridx = 2;
@@ -104,6 +107,7 @@ public class EditorGUI extends JFrame {
         
        //*.addActionListener(new Handler());
         changeComponentsSize();
+        fileList.addListSelectionListener(new onSelect());
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -124,13 +128,24 @@ public class EditorGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         setVisible(true);
-        if(fileListModel.getSize() > 0) 
-        textArea.setText("...");
         
+        if(fileListModel.getSize() == 0) 
+            textArea.setText("Choose file to edit");
+    
+        
+    }
+    public String getOpenedFileName(){
+        if(fileList.isSelectionEmpty())return null;
+        return (String) fileListModel.getElementAt(fileList.getSelectedIndex());
     }
     private void openFile(int id){
         String name = (String) fileListModel.getElementAt(id);
-        client.openFile(name);
+        for(FileBuffer fb : client.files){
+            if(fb.getName().equals(name)){
+                textArea.setText(fb.buf.toString());
+                fileName.setText(fb.getName());
+            }
+        }
     }
     private void changeComponentsSize(){
         sp.setVisible(false);
@@ -149,6 +164,12 @@ public class EditorGUI extends JFrame {
         addFile.setVisible(true);
         deleteFile.setVisible(true);
     }
+    public void updateOpenedFile(FileBuffer fb){
+
+        textArea.setText(fb.buf.toString());
+        fileName.setText(fb.getName());
+        
+    }
     public void updateFileList(){
         fileListModel.clear();
         for(String name:client.sfiles)
@@ -159,9 +180,23 @@ public class EditorGUI extends JFrame {
         fileListModel.addElement(name);
     }
     public void deleteFile(int id){
+        if(id == fileList.getSelectedIndex()){
+            textArea.setText("Choose file to edit");
+            fileName.setText("...");
+        }
+        String name = (String) fileListModel.get(id);
         fileListModel.remove(id);
+        client.deleteFile(name);
     }
-    
+    private class onSelect implements ListSelectionListener{
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if(!fileList.isSelectionEmpty())
+                openFile(fileList.getSelectedIndex());
+        }
+        
+    }
     private class onClick implements ActionListener{
         public void actionPerformed(ActionEvent e)
         {
