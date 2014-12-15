@@ -241,7 +241,7 @@ public class Client{
 	   
     }
     //TO-DO:ANDRIUI update file
-    public void updateFile(String name){
+    public void updateFile(String name, int at, String newText){
         
     }
     private void checkInputBuffer() {
