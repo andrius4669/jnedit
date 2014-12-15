@@ -263,29 +263,12 @@ public class ServerState {
 	{
 		for(;;) {
 			try { selector.select(); }
-			catch(IOException e) { System.out.println(e.toString()); return; }
+			catch(IOException e) { System.out.printf("select: %s\n", e.toString()); return; }
 			Set<SelectionKey> selected = selector.selectedKeys();
 			Iterator<SelectionKey> it = selected.iterator();
 			while(it.hasNext()) {
 				SelectionKey key = it.next();
 				it.remove();
-				if(key.isAcceptable()) {
-					SocketChannel clientsock;
-					try { clientsock = ((ServerSocketChannel)key.channel()).accept(); }
-					catch(IOException e) { System.out.println(e.toString()); continue; }
-					if(clientsock == null) continue;
-					try { clientsock.configureBlocking(false); }
-					catch(IOException e) { System.out.println(e.toString()); continue; }
-					try { clientsock.socket().setKeepAlive(true); } catch(Exception e) {}
-					try { clientsock.socket().setTcpNoDelay(true); } catch(Exception e) {}
-					ServerClient client = new ServerClient();
-					client.sock = clientsock;
-					clients.add(client);
-					try { clientsock.register(selector, SelectionKey.OP_READ, client); }
-					catch(IOException e) { System.out.println(e.toString()); continue; }
-					sendString(clientsock, genBufList());
-					sendString(clientsock, genClientsList());
-				}
 				if(key.isReadable()) {
 					SocketChannel sock = (SocketChannel)key.channel();
 					ServerClient client = (ServerClient)key.attachment();
@@ -309,6 +292,23 @@ public class ServerState {
 						try { sock.close(); }
 						catch(Exception e) { System.out.println(e.toString()); }
 					}
+				}
+				if(key.isAcceptable()) {
+					SocketChannel clientsock;
+					try { clientsock = ((ServerSocketChannel)key.channel()).accept(); }
+					catch(IOException e) { System.out.printf("accept: %s\n", e.toString()); continue; }
+					if(clientsock == null) continue;
+					try { clientsock.configureBlocking(false); }
+					catch(IOException e) { System.out.printf("cs.cblk: %s\n", e.toString()); continue; }
+					try { clientsock.socket().setKeepAlive(true); } catch(Exception e) {}
+					try { clientsock.socket().setTcpNoDelay(true); } catch(Exception e) {}
+					ServerClient client = new ServerClient();
+					client.sock = clientsock;
+					clients.add(client);
+					try { clientsock.register(selector, SelectionKey.OP_READ, client); }
+					catch(IOException e) { System.out.println(e.toString()); continue; }
+					sendString(clientsock, genBufList());
+					sendString(clientsock, genClientsList());
 				}
 			}
 		}
