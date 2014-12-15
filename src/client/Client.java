@@ -12,6 +12,7 @@ import utils.*;
  */
 public class Client{
     EditorGUI editor;
+    Thread autocheck = null;
     public String test;
     public Socket csock;
     public OutputStream sockout;
@@ -22,6 +23,8 @@ public class Client{
     final public ArrayList<String> sfiles = new ArrayList<>();	/* subscriptions/files opened by us */
     
     public Client(){
+        autocheck = new Thread(new AutoCheck());
+        autocheck.start();
         VerificationGUI verGUI = new VerificationGUI(this);
         verGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -299,7 +302,7 @@ public class Client{
     }
     public boolean connect(){
 
-	try { csock = new Socket("192.168.0.23", 61337); }
+	try { csock = new Socket("127.0.0.1", 61337); }
 	catch(UnknownHostException e) { csock = null; }
 	catch(IOException e) { csock = null; }
 
@@ -310,14 +313,14 @@ public class Client{
         return false;
     }
     public boolean connect(String username){
-       /* editor = new EditorGUI(this, EditorType.EDIT);
+        editor = new EditorGUI(this, EditorType.EDIT);
         editor.addFile("SDFSD");
         editor.addFile("SDFSDs");
         files.get(0).parseEscapedText("ghf");
         files.get(1).parseEscapedText("gsdfsdfsdfhf");
         editor.updateFileList();
-        return false;*/
-	try { csock = new Socket("192.168.0.23", 61337); }
+        return false;/*
+	try { csock = new Socket("127.0.0.1", 61337); }
 	catch(UnknownHostException e) { csock = null; }
 	catch(IOException e) { csock = null; }
 
@@ -325,12 +328,24 @@ public class Client{
 		editor = new EditorGUI(this, EditorType.EDIT);
                 return true;
 	}
-        return false;
+        return false;*/
+    }
+    class AutoCheck implements Runnable{
+        public void goCheck(){
+            Client.this.checkSocket();
+            try {Thread.sleep(5);} catch (Exception e) { };
+            goCheck();
+        }
+        @Override
+        public void run() {
+            goCheck();
+        }  
     }
     public static void main(String[] args) {
         Client client = new Client();
         client.test = "DSDS";
         
     }
+    
     
 }

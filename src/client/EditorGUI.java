@@ -11,6 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
@@ -108,6 +110,7 @@ public class EditorGUI extends JFrame {
        //*.addActionListener(new Handler());
         changeComponentsSize();
         fileList.addListSelectionListener(new onSelect());
+        textArea.addKeyListener(new onWriting());
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -125,6 +128,7 @@ public class EditorGUI extends JFrame {
             deleteFile.setEnabled(false);
             textArea.setEditable(false);
         }
+        
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         setVisible(true);
@@ -208,6 +212,24 @@ public class EditorGUI extends JFrame {
             }
                 
         }
+    }
+    private class onWriting implements KeyListener{
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
     }
     private class AutoUpdates implements Runnable{
 
