@@ -61,6 +61,7 @@ public class Client{
     
     private void parseCommand(String ccmd) {
 	    	if(ccmd.length() <= 0) return;
+		System.out.printf("dbg:cmd: %s\n", ccmd);
 		int space = ccmd.indexOf(' ');
 		String cmdname = ccmd.substring(0, space >= 0 ? space : ccmd.length()).toLowerCase();
 		if(cmdname.length() <= 0) return;
