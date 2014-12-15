@@ -198,6 +198,15 @@ public class Client{
 				files.add(new FileBuffer(arg));
 				break;
 			}
+			case "makef":
+			{
+				boolean found = false;
+				for(FileBuffer f: files) if(f.getName().equals(arg)) { found = true; break; }
+				if(found) break;
+				files.add(new FileBuffer(arg));
+				/* TODO show in gui */
+				break;
+			}
 		}
     }
     
