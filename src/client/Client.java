@@ -249,8 +249,6 @@ public class Client{
            
 	    FileBuffer f = findBuf(name);	
 	    if(f == null) return;
-        
-            System.out.println(name);
 	    StringBuilder sb = new StringBuilder();
 	    sb.append("efsend ").append(name).append(' ');
 	    f.putEscapedText(sb);
@@ -361,6 +359,13 @@ public class Client{
     }
     public static void main(String[] args) {
         Client client = new Client();
+        FileBuffers<FileBuffer> buffers =new FileBuffers<>();
+        buffers.add(new FileBuffer("1test"));
+        buffers.add(new FileBuffer("2dfsd"));
+        buffers.add(new FileBuffer("3fsdf"));
+        buffers.remove(1);
+        for(int i = 0; i < buffers.size(); i++)
+            System.out.println(buffers.get(i).getName());
     }
     
     
