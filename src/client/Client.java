@@ -347,9 +347,10 @@ public class Client{
     }
     class AutoCheck implements Runnable{
         public void goCheck(){
-            Client.this.checkSocket();
-            try {Thread.sleep(5);} catch (Exception e) { };
-            goCheck();
+		for(;;) {
+			Client.this.checkSocket();
+			try {Thread.sleep(5);} catch (Exception e) { };
+		}
         }
         @Override
         public void run() {
@@ -358,8 +359,6 @@ public class Client{
     }
     public static void main(String[] args) {
         Client client = new Client();
-        
-        
     }
     
     
