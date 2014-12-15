@@ -37,17 +37,41 @@ public class ServerState {
 		try {
 			/* make socket */
 			servsock = ServerSocketChannel.open();
+		} catch(Exception e) {
+			servsock = null; selector = null;
+			System.out.printf("Failure in opening server socket channel: %s\n", e.toString());
+			return false;
+		}
+		try {
 			/* bind it */
 			servsock.bind(new InetSocketAddress(port));
+		} catch(Exception e) {
+			servsock = null; selector = null;
+			System.out.printf("Failure in binding server socket: %s\n", e.toString());
+			return false;
+		}
+		try {
 			/* make it non-blocking */
 			servsock.configureBlocking(false);
+		} catch(Exception e) {
+			servsock = null; selector = null;
+			System.out.printf("Failure in making server socket non-blocking: %s\n", e.toString());
+			return false;
+		}
+		try {
 			/* make selector obj */
 			selector = Selector.open();
+		} catch(Exception e) {
+			servsock = null; selector = null;
+			System.out.printf("Failure in opening selector: %s\n", e.toString());
+			return false;
+		}
+		try {
 			/* register socket to selector for accepting connections */
 			servsock.register(selector, SelectionKey.OP_ACCEPT);
 		} catch(Exception e) {
-			servsock = null;
-			selector = null;
+			servsock = null; selector = null;
+			System.out.printf("Failure in registering to selector: %s\n", e.toString());
 			return false;
 		}
 		return true;

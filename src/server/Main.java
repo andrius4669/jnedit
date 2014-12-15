@@ -3,7 +3,7 @@ package server;
 public class Main {
 	private void cmain(String args[]) {
 		ServerState s = new ServerState();
-		s.PrepareServer(61337);
+		if(!s.PrepareServer(61337)) { System.out.println("Serverio paruosimas nepavyko!!"); return; }
 		s.ServerLoop();
 	}
 	
