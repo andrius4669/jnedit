@@ -13,7 +13,6 @@ import utils.*;
 public class Client{
     EditorGUI editor;
     Thread autocheck = null;
-    public String test;
     public Socket csock;
     public OutputStream sockout;
     public InputStream sockin;
@@ -221,6 +220,7 @@ public class Client{
 				editor.updateFileList();
 				break;
 			}
+                        //TO-DO:ANDRIUI - Gauti info kai ištrinamas failas
 		}
     }
     
@@ -235,8 +235,9 @@ public class Client{
 	    addSubscription(name);
 	    sendString(String.format("makef %s\n", name));
     }
+    //TO-DO:ANDRIUI failo trinimas
     public void deleteFile(String name) {
-	    //TO-DO: delete file
+	   
     }
     private void checkInputBuffer() {
 	    	int index;
@@ -301,27 +302,31 @@ public class Client{
 	    return true;
     }
     public boolean connect(){
-
+        editor = new EditorGUI(this, EditorType.VIEW);
 	try { csock = new Socket("127.0.0.1", 61337); }
 	catch(UnknownHostException e) { csock = null; }
 	catch(IOException e) { csock = null; }
 
         if(isSocketReady() && setupSocket(null)) {
-		editor = new EditorGUI(this, EditorType.VIEW);
+		editor.setVisible(true);
                 return true;
 	}
+        editor.dispose();
+        editor = null;
         return false;
     }
     public boolean connect(String username){
-
+        editor = new EditorGUI(this, EditorType.EDIT);
 	try { csock = new Socket("127.0.0.1", 61337); }
 	catch(UnknownHostException e) { csock = null; }
 	catch(IOException e) { csock = null; }
 
         if(isSocketReady() && setupSocket(username)) {
-		editor = new EditorGUI(this, EditorType.EDIT);
+		editor.setVisible(true);
                 return true;
 	}
+        editor.dispose();
+        editor = null;
         return false;
     }
     class AutoCheck implements Runnable{
@@ -337,7 +342,7 @@ public class Client{
     }
     public static void main(String[] args) {
         Client client = new Client();
-        client.test = "DSDS";
+        
         
     }
     

@@ -128,10 +128,15 @@ public class EditorGUI extends JFrame {
             deleteFile.setEnabled(false);
             textArea.setEditable(false);
         }
-        
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                
+            }
+        });
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        setVisible(true);
+     
         
         if(fileListModel.getSize() == 0) 
             textArea.setText("Choose file to edit");
@@ -176,8 +181,8 @@ public class EditorGUI extends JFrame {
     }
     public void updateFileList(){
         fileListModel.clear();
-        for(String name:client.sfiles)
-            fileListModel.addElement(name);
+        for(FileBuffer fb:client.files)
+            fileListModel.addElement(fb.getName());
     }
     public void addFile(String name){
         client.createFile(name);
