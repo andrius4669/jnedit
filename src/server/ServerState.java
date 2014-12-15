@@ -85,7 +85,7 @@ public class ServerState {
 		b.flip();
 		while(b.hasRemaining()) {
 			try { s.write(b); }
-			catch(IOException e) {}
+			catch(IOException e) { System.out.printf("write: %s\n", e.toString()); break; }
 		}
 	}
 	
@@ -269,15 +269,35 @@ public class ServerState {
 			while(it.hasNext()) {
 				SelectionKey key = it.next();
 				it.remove();
+				if(!key.isValid()) {
+					key.cancel();
+					break;
+				}
 				if(key.isReadable()) {
 					SocketChannel sock = (SocketChannel)key.channel();
 					ServerClient client = (ServerClient)key.attachment();
+					if(!sock.isConnected()) {
+						clientLeft(client);
+						clients.remove(client);
+						key.cancel();
+						try { sock.close(); }
+						catch(Exception e) { System.out.println(e.toString()); }
+						break;
+					}
 					byte buf[] = new byte[1500];
 					ByteBuffer b = ByteBuffer.wrap(buf);
 					int bread;
 					b.clear();
 					try { bread = sock.read(b); }
-					catch(Exception e) { System.out.println(e.toString()); continue; }
+					catch(Exception e) {
+						System.out.printf("bad read, disconnecting (%s)\n", e.toString());
+						clientLeft(client);
+						clients.remove(client);
+						key.cancel();
+						try { sock.close(); }
+						catch(Exception ee) { System.out.println(ee.toString()); }
+						break;
+					}
 					if(bread > 0)
 					{
 						String ss = new String(buf, 0, bread);
@@ -291,13 +311,14 @@ public class ServerState {
 						key.cancel();
 						try { sock.close(); }
 						catch(Exception e) { System.out.println(e.toString()); }
+						break;
 					}
 				}
 				if(key.isAcceptable()) {
 					SocketChannel clientsock;
 					try { clientsock = ((ServerSocketChannel)key.channel()).accept(); }
 					catch(IOException e) { System.out.printf("accept: %s\n", e.toString()); continue; }
-					if(clientsock == null) continue;
+					if(clientsock == null) break;
 					try { clientsock.configureBlocking(false); }
 					catch(IOException e) { System.out.printf("cs.cblk: %s\n", e.toString()); continue; }
 					try { clientsock.socket().setKeepAlive(true); } catch(Exception e) {}
@@ -306,7 +327,7 @@ public class ServerState {
 					client.sock = clientsock;
 					clients.add(client);
 					try { clientsock.register(selector, SelectionKey.OP_READ, client); }
-					catch(IOException e) { System.out.println(e.toString()); continue; }
+					catch(IOException e) { System.out.printf("register: %s\n", e.toString()); break; }
 					sendString(clientsock, genBufList());
 					sendString(clientsock, genClientsList());
 				}
