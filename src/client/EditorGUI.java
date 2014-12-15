@@ -135,12 +135,7 @@ public class EditorGUI extends JFrame {
             deleteFile.setEnabled(false);
             textArea.setEditable(false);
         }
-        this.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                
-            }
-        });
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
      
@@ -158,12 +153,11 @@ public class EditorGUI extends JFrame {
         String name = (String) fileListModel.getElementAt(id);
         for(FileBuffer fb : client.files){
             if(fb.getName().equals(name)){
+                client.openFile(name);
                 textArea.setText(fb.buf.toString());
                 fileName.setText(fb.getName());
-                if(!fb.isUpdated())
-                    updateFile.setEnabled(false);
-                else    
-                    updateFile.setEnabled(true);
+                updateFile.setEnabled(false);
+                
             }
         }
     }
@@ -213,7 +207,6 @@ public class EditorGUI extends JFrame {
         if(fileList.isSelectionEmpty())return;
         String name = (String) fileListModel.get(fileList.getSelectedIndex());
         FileBuffer bf =  client.findBuf(name);
-        bf.setUpdated(true);
         bf.clearText();
         bf.parseEscapedText(textArea.getText());
         updateFile.setEnabled(true);

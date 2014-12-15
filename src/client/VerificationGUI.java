@@ -54,7 +54,7 @@ public class VerificationGUI extends JFrame{
     public VerificationGUI(Client client){
        super("Online text editor");
        this.client = client;
-       setSize(265, 150);
+       setSize(265, 120);
        setResizable(false);
        setLayout(new GridBagLayout());
         

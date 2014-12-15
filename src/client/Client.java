@@ -246,9 +246,11 @@ public class Client{
 	   sendString(String.format("rmf %s\n", name));
     }
     public void updateFile(String name){
+           
 	    FileBuffer f = findBuf(name);	
 	    if(f == null) return;
-            f.setUpdated(false);
+        
+            System.out.println(name);
 	    StringBuilder sb = new StringBuilder();
 	    sb.append("efsend ").append(name).append(' ');
 	    f.putEscapedText(sb);
