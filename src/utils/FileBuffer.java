@@ -31,10 +31,16 @@ package utils;
 public class FileBuffer {
 	private String filename;
 	public final StringBuffer buf = new StringBuffer();
-	
+	private boolean updated = false;
+        
 	public FileBuffer() {}
 	public FileBuffer(String n) { filename = n; }
-	
+	public boolean isUpdated(){
+            return updated;
+        }
+        public void setUpdated(boolean updated){
+            this.updated = updated;
+        }
 	public String getName() { return filename; }
 	public void rename(String n) { filename = n; }
 	

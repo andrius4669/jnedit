@@ -225,7 +225,7 @@ public class Client{
 			{
 				FileBuffer f = findBuf(arg);
 				files.remove(f);
-				// TODO for domas: update gui
+				editor.removeFileFromList(f.getName());
 				break;
 			}
 		}
@@ -246,8 +246,9 @@ public class Client{
 	   sendString(String.format("rmf %s\n", name));
     }
     public void updateFile(String name){
-	    FileBuffer f = findBuf(name);	/* filebuffer already edited */
+	    FileBuffer f = findBuf(name);	
 	    if(f == null) return;
+            f.setUpdated(false);
 	    StringBuilder sb = new StringBuilder();
 	    sb.append("efsend ").append(name).append(' ');
 	    f.putEscapedText(sb);

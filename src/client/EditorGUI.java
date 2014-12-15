@@ -34,7 +34,7 @@ import utils.FileBuffer;
  */
 public class EditorGUI extends JFrame {
     private final JLabel fileName;
-    private final JButton addFile, deleteFile;
+    private final JButton addFile, deleteFile, updateFile;
     
     private final JList fileList;
     private final JTextArea textArea;
@@ -95,7 +95,12 @@ public class EditorGUI extends JFrame {
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         add(fileName, gbc);
+        updateFile = new JButton("Update");
+        updateFile.setEnabled(false);
+        gbc.gridx = 3;
+        gbc.gridy = 0;
         
+        add(updateFile, gbc);
         textArea = new JTextArea();
         textArea.setFont(new Font("Consolas", PLAIN, 14));
         textArea.setMargin(new Insets(5, 5, 5, 5));
@@ -104,7 +109,7 @@ public class EditorGUI extends JFrame {
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.gridheight = 1;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         add(sp2, gbc);
         
        //*.addActionListener(new Handler());
@@ -123,6 +128,7 @@ public class EditorGUI extends JFrame {
         if(type == EditorType.EDIT){
             addFile.addActionListener(new onClick());
             deleteFile.addActionListener(new onClick());
+            updateFile.addActionListener(new onClick());
         }else{
             addFile.setEnabled(false);
             deleteFile.setEnabled(false);
@@ -153,6 +159,10 @@ public class EditorGUI extends JFrame {
             if(fb.getName().equals(name)){
                 textArea.setText(fb.buf.toString());
                 fileName.setText(fb.getName());
+                if(!fb.isUpdated())
+                    updateFile.setEnabled(false);
+                else    
+                    updateFile.setEnabled(true);
             }
         }
     }
@@ -163,9 +173,10 @@ public class EditorGUI extends JFrame {
         addFile.setVisible(false);
         deleteFile.setVisible(false);
         sp.setPreferredSize(new Dimension(200, getHeight()-86));
-        fileName.setPreferredSize(new Dimension(getWidth()-240, 22));
+        fileName.setPreferredSize(new Dimension(getWidth()-342, 22));
         addFile.setPreferredSize(new Dimension(97, 26));
         deleteFile.setPreferredSize(new Dimension(97, 26)); 
+        updateFile.setPreferredSize(new Dimension(97, 26)); 
         sp2.setPreferredSize(new Dimension(getWidth()-239, getHeight()-86));
         sp.setVisible(true);
         fileName.setVisible(true);
@@ -197,6 +208,28 @@ public class EditorGUI extends JFrame {
         fileListModel.remove(id);
         client.deleteFile(name);
     }
+    public void openFileEdited(){
+        if(fileList.isSelectionEmpty())return;
+        String name = (String) fileListModel.get(fileList.getSelectedIndex());
+        FileBuffer bf =  client.findBuf(name);
+        bf.setUpdated(true);
+        bf.clearText();
+        bf.parseEscapedText(textArea.getText());
+        updateFile.setEnabled(true);
+    }
+    void removeFileFromList(String name) {
+        for(int i = 0; i < fileListModel.getSize(); i++){
+            if(name.equals(fileListModel.getElementAt(i))){
+                if(i == fileList.getSelectedIndex()){
+                    textArea.setText("Choose file to edit");
+                    fileName.setText("...");
+                }
+                fileListModel.remove(i);
+                
+                return;
+            }
+        }
+    }
     private class onSelect implements ListSelectionListener{
 
         @Override
@@ -215,24 +248,31 @@ public class EditorGUI extends JFrame {
             if(e.getSource() == deleteFile && !fileList.isSelectionEmpty()){
                 new DeleteFileGUI(EditorGUI.this, fileList.getSelectedIndex());
             }
+            if(e.getSource() == updateFile){
+                if(fileList.isSelectionEmpty()) return;
+                client.updateFile((String) fileListModel.getElementAt(fileList.getSelectedIndex()));
+                updateFile.setEnabled(false);
+            }
                 
         }
     }
     private class onWriting implements KeyListener{
-
+        
         @Override
         public void keyTyped(KeyEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            
+            EditorGUI.this.openFileEdited();
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            EditorGUI.this.openFileEdited();
+
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            EditorGUI.this.openFileEdited();
         }
         
     }
