@@ -212,7 +212,9 @@ public class Client{
 	    addSubscription(name);
 	    sendString(String.format("makef %s\n", name));
     }
-    
+    public void deleteFile(String name) {
+	    //TO-DO: delete file
+    }
     private void checkInputBuffer() {
 	    	int index;
 		boolean needcheck;
@@ -275,37 +277,28 @@ public class Client{
 	    else sendString(String.format("name %s\n", name));
 	    return true;
     }
-
     public boolean connect(){
-
-	try { csock = new Socket("jnedit.andrius4669.org", 61337); }
+        editor = new EditorGUI(this, EditorType.VIEW);
+	try { csock = new Socket("localhost", 61337); }
 	catch(UnknownHostException e) { csock = null; }
 	catch(IOException e) { csock = null; }
 
         if(isSocketReady() && setupSocket(null)) {
-		//conGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		//conGUI.setVisible(false);
-		//conGUI.dispose();
 		editor = new EditorGUI(this, EditorType.VIEW);
                 return true;
 	}
         return false;
     }
-    public boolean connect(String username, String password){
-      /*  ConnectingGUI conGUI = new ConnectingGUI();
-        conGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        //TO-DO: connection with server
-        
-        //IF Connection success
-        conGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        conGUI.setVisible(false);
-        conGUI.dispose();
-        editor = new EditorGUI(this, EditorType.VIEW);
-        //ELSE IF Wrong username or password
-        conGUI.badUserData();
-        //ELSE
-        conGUI.connectionFailed();*/
+    public boolean connect(String username){
+        editor = new EditorGUI(this, EditorType.EDIT);
+	try { csock = new Socket("localhost", 61337); }
+	catch(UnknownHostException e) { csock = null; }
+	catch(IOException e) { csock = null; }
+
+        if(isSocketReady() && setupSocket(username)) {
+		editor = new EditorGUI(this, EditorType.EDIT);
+                return true;
+	}
         return false;
     }
     public static void main(String[] args) {

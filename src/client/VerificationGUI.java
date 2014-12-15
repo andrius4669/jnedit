@@ -48,7 +48,6 @@ import javax.swing.JTextField;
 public class VerificationGUI extends JFrame{
     private final JLabel title;
     private final JTextField username;
-    private final JPasswordField password;
     private final JButton submit, guestAccess;
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final Client client;
@@ -66,13 +65,11 @@ public class VerificationGUI extends JFrame{
        Image icon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB_PRE);
        setIconImage(icon);
         
-        title = new JLabel("Administrator mode");
+        title = new JLabel("User name");
         
         username = new JTextField();
         username.setPreferredSize(new Dimension(246, 22));
-        
-        password = new JPasswordField();
-        password.setPreferredSize(new Dimension(246, 22));
+
         
         submit = new JButton("Sign in");
         submit.setPreferredSize(new Dimension(120, 30));
@@ -89,8 +86,6 @@ public class VerificationGUI extends JFrame{
         gbc.gridy++;
         add(username, gbc);
         gbc.gridy++;
-        add(password, gbc);
-        gbc.gridy++;
         gbc.gridwidth = 1;
         add(guestAccess, gbc);
         gbc.gridx = 1;
@@ -106,14 +101,13 @@ public class VerificationGUI extends JFrame{
             if(e.getSource() == guestAccess){
                 VerificationGUI.this.setVisible(false);
                 VerificationGUI.this.dispose();
-  
-                client.connect();
+                new ConnectingGUI(client);
                 
             }
-            if(e.getSource() == submit && !username.getText().equals("") && !password.getText().equals("")){
+            if(e.getSource() == submit && !username.getText().equals("")){
                 VerificationGUI.this.setVisible(false);
                 VerificationGUI.this.dispose();
-                client.connect(username.getText(), password.getText());
+                new ConnectingGUI(client, username.getText());
                 
             }
             

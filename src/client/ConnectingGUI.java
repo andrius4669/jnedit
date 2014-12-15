@@ -26,13 +26,12 @@ public class ConnectingGUI extends JFrame implements Runnable{
     private Thread thread = null;
     private Thread timer = null;
     private Client client;
-    private String username = null,
-                   password = null;
-    public ConnectingGUI(Client client, String username, String password){
+    private String username = null;
+    public ConnectingGUI(Client client, String username){
         super("Online text editor");
         this.client = client;
         this.username = username;
-        this.password = password;
+     
         setSize(300, 100);
         
         setResizable(false);
@@ -69,7 +68,7 @@ public class ConnectingGUI extends JFrame implements Runnable{
 
     }
     public ConnectingGUI(Client client){
-        this(client, null, null);
+        this(client, null);
     }
     public void connectionFailed(){
         msg[0].setText("Error!");
@@ -83,12 +82,19 @@ public class ConnectingGUI extends JFrame implements Runnable{
 
     @Override
     public void run() {
-        if(username == null || password == null){
+        if(username == null){
             if(client.connect()){
                 setVisible(false);
                 dispose();
             }else
                 connectionFailed();
+        }else{
+             if(client.connect(username)){
+                setVisible(false);
+                dispose();
+            }else
+                connectionFailed();
+            
         }
 
         timer.stop();

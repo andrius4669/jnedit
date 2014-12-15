@@ -67,12 +67,7 @@ public class EditorGUI extends JFrame {
         add(deleteFile, gbc);
         
         fileListModel = new DefaultListModel();
-        fileListModel.addElement("EditorGUI.java");
-        fileListModel.addElement("Other.txt");
-        fileListModel.addElement("Other.txt");
-        fileListModel.addElement("Other.txt");
-        fileListModel.addElement("Other.txt");
-        fileListModel.addElement("Other.txt");
+        updateFileList();
         fileList = new JList(fileListModel);
         fileList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         fileList.setSelectedIndex(0);
@@ -106,7 +101,7 @@ public class EditorGUI extends JFrame {
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         add(sp2, gbc);
-       
+        
        //*.addActionListener(new Handler());
         changeComponentsSize();
         this.addComponentListener(new ComponentAdapter() {
@@ -127,79 +122,15 @@ public class EditorGUI extends JFrame {
             textArea.setEditable(false);
         }
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
         
-        textArea.setText("/*\n" +
-" * To change this license header, choose License Headers in Project Properties.\n" +
-" * To change this template file, choose Tools | Templates\n" +
-" * and open the template in the editor.\n" +
-" */\n" +
-"\n" +
-"package projektas;\n" +
-"import java.awt.Color;\n" +
-"import java.awt.Dimension;\n" +
-"import java.awt.Font;\n" +
-"import static java.awt.Font.PLAIN;\n" +
-"import java.awt.GridBagConstraints;\n" +
-"import java.awt.GridBagLayout;\n" +
-"import java.awt.Insets;\n" +
-"import java.awt.event.ActionEvent;\n" +
-"import java.awt.event.ActionListener;\n" +
-"import javax.swing.BorderFactory;\n" +
-"import javax.swing.JButton;\n" +
-"import javax.swing.JFrame;\n" +
-"import javax.swing.JLabel;\n" +
-"import javax.swing.JList;\n" +
-"import javax.swing.JOptionPane;\n" +
-"import javax.swing.JPasswordField;\n" +
-"import javax.swing.JScrollPane;\n" +
-"import javax.swing.JTextArea;\n" +
-"import javax.swing.JTextField;\n" +
-"import javax.swing.ListSelectionModel;\n" +
-"import javax.swing.border.EmptyBorder;\n" +
-"/**\n" +
-" *\n" +
-" * @author Domas\n" +
-" */\n" +
-"public class EditorGUI extends JFrame {\n" +
-"        /**\n" +
-"     * @param args the command line arguments\n" +
-"     */\n" +
-"   \n" +
-"    private JLabel fileName;\n" +
-"    private JButton save;\n" +
-"    \n" +
-"    private JList fileList;\n" +
-"    private JTextArea textArea;\n" +
-"    GridBagConstraints gbc = new GridBagConstraints();\n" +
-"    public EditorGUI(){\n" +
-"        super(\"Online text editor\");\n" +
-"        setSize(1000, 800);\n" +
-"        setLayout(new GridBagLayout());\n" +
-"        gbc.insets = new Insets(3, 3, 3, 3);\n" +
-"        fileList = new JList(new String[]{\"EditorUI.java\", \"Other.txt\", \"Other.txt\", \"Other.txt\", \"Other.txt\", \"Other.txt\", \"Other.txt\"});\n" +
-"        \n" +
-"        fileList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);\n" +
-"        fileList.setLayoutOrientation(JList.VERTICAL);\n" +
-"        fileList.setFont(new Font(\"Arial\", PLAIN, 12));\n" +
-"        fileList.setBorder(new EmptyBorder(5,5, 5, 5));\n" +
-"        \n" +
-"        JScrollPane sp = new JScrollPane(fileList);\n" +
-"        sp.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));\n" +
-"        sp.setPreferredSize(new Dimension(200, getHeight()-46));\n" +
-"        gbc.gridx = 0;\n" +
-"        gbc.gridy = 0;\n" +
-"        gbc.gridheight = 2;\n" +
-"        gbc.gridwidth = 1;\n" +
-"        add(sp, gbc);\n" +
-"        \n" +
-"        \n" +
-"        fileName = new JLabel(\"EditorUI.java\");\n" +
-"        fileName.setToolTipText(\"File name\");\n" +
-"        fileName.setFont(new Font(\"Arial\", PLAIN, 20));\n" +
-"        fileName.setPreferredSize(new Dimension(getWidth()-228-86, 22));\n" +
-"        gbc.gridx = 1;\n" +
-"        gbc.gridy = 0;");
+        setVisible(true);
+        if(fileListModel.getSize() > 0) 
+        textArea.setText("...");
+        
+    }
+    private void openFile(int id){
+        String name = (String) fileListModel.getElementAt(id);
+        client.openFile(name);
     }
     private void changeComponentsSize(){
         sp.setVisible(false);
@@ -218,12 +149,19 @@ public class EditorGUI extends JFrame {
         addFile.setVisible(true);
         deleteFile.setVisible(true);
     }
+    public void updateFileList(){
+        fileListModel.clear();
+        for(String name:client.sfiles)
+            fileListModel.addElement(name);
+    }
     public void addFile(String name){
+        client.createFile(name);
         fileListModel.addElement(name);
     }
     public void deleteFile(int id){
         fileListModel.remove(id);
     }
+    
     private class onClick implements ActionListener{
         public void actionPerformed(ActionEvent e)
         {
@@ -235,6 +173,15 @@ public class EditorGUI extends JFrame {
             }
                 
         }
+    }
+    private class AutoUpdates implements Runnable{
+
+        @Override
+        public void run() {
+            //Check for files and writings
+        }
+        
+        
     }
     /*private class Handler implements ActionListener{
         public void actionPerformed(ActionEvent e){
