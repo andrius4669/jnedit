@@ -115,7 +115,7 @@ public class EditorGUI extends JFrame {
        //*.addActionListener(new Handler());
         changeComponentsSize();
         fileList.addListSelectionListener(new onSelect());
-        textArea.addKeyListener(new onWriting());
+        
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -129,6 +129,7 @@ public class EditorGUI extends JFrame {
             addFile.addActionListener(new onClick());
             deleteFile.addActionListener(new onClick());
             updateFile.addActionListener(new onClick());
+            textArea.addKeyListener(new onWriting());
         }else{
             addFile.setEnabled(false);
             deleteFile.setEnabled(false);
