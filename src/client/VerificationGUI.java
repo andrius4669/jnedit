@@ -103,10 +103,20 @@ public class VerificationGUI extends JFrame{
     private class onClick implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e){
-            if(e.getSource() == guestAccess)
+            if(e.getSource() == guestAccess){
+                VerificationGUI.this.setVisible(false);
+                VerificationGUI.this.dispose();
+  
                 client.connect();
-            if(e.getSource() == submit && !username.getText().equals("") && !password.getText().equals(""))
+                
+            }
+            if(e.getSource() == submit && !username.getText().equals("") && !password.getText().equals("")){
+                VerificationGUI.this.setVisible(false);
+                VerificationGUI.this.dispose();
                 client.connect(username.getText(), password.getText());
+                
+            }
+            
         }
         
     }

@@ -9,19 +9,30 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author Domas
  */
-public class ConnectingGUI extends JFrame{
+public class ConnectingGUI extends JFrame implements Runnable{
     private final GridBagConstraints gbc = new GridBagConstraints();
     private final JLabel msg[] = new JLabel[2];
-    public ConnectingGUI(){
+    private Thread thread = null;
+    private Thread timer = null;
+    private Client client;
+    private String username = null,
+                   password = null;
+    public ConnectingGUI(Client client, String username, String password){
         super("Online text editor");
-              
+        this.client = client;
+        this.username = username;
+        this.password = password;
         setSize(300, 100);
         
         setResizable(false);
@@ -48,7 +59,17 @@ public class ConnectingGUI extends JFrame{
         add(msg[1], gbc);
         
         setVisible(true);
-        animation(0);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        thread = new Thread(this);
+        thread.start();
+        timer = new Thread(new Timer());
+        timer.start();
+
+
+
+    }
+    public ConnectingGUI(Client client){
+        this(client, null, null);
     }
     public void connectionFailed(){
         msg[0].setText("Error!");
@@ -58,16 +79,37 @@ public class ConnectingGUI extends JFrame{
         msg[0].setText("Error!");
         msg[1].setText("Wrong administrator username or password!");
     }
-    private void animation(int i){
-        
-        try {Thread.sleep(500);} catch (Exception e) { };
-        if(i>=3){
-            msg[1].setText("Connecting to server");
-            animation(0);
-        }else{
-            msg[1].setText(msg[1].getText()+".");
-            animation(++i);
-        }
-    }
 
+
+    @Override
+    public void run() {
+        if(username == null || password == null){
+            if(client.connect()){
+                setVisible(false);
+                dispose();
+            }else
+                connectionFailed();
+        }
+
+        timer.stop();
+    }
+    private class Timer implements Runnable{
+        private void animation(int i){
+
+            try {Thread.sleep(500);} catch (Exception e) { };
+            if(i>=3){
+                msg[1].setText("Connecting to server");
+                animation(0);
+            }else{
+                msg[1].setText(msg[1].getText()+".");
+                animation(++i);
+            }
+        }
+        @Override
+        public void run() {
+            animation(0);
+        }
+        
+    
+    }
 }

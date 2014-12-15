@@ -12,6 +12,7 @@ import utils.*;
  */
 public class Client{
     EditorGUI editor;
+    public String test;
     public Socket csock;
     public OutputStream sockout;
     public InputStream sockin;
@@ -274,27 +275,24 @@ public class Client{
 	    else sendString(String.format("name %s\n", name));
 	    return true;
     }
-    
-    public void connect(){
-        ConnectingGUI conGUI = new ConnectingGUI();
-        conGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        //TO-DO: connection with server
+
+    public boolean connect(){
+
 	try { csock = new Socket("jnedit.andrius4669.org", 61337); }
 	catch(UnknownHostException e) { csock = null; }
 	catch(IOException e) { csock = null; }
 
         if(isSocketReady() && setupSocket(null)) {
-		conGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		conGUI.setVisible(false);
-		conGUI.dispose();
+		//conGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		//conGUI.setVisible(false);
+		//conGUI.dispose();
 		editor = new EditorGUI(this, EditorType.VIEW);
-	} else {
-		conGUI.connectionFailed();
+                return true;
 	}
+        return false;
     }
-    public void connect(String username, String password){
-        ConnectingGUI conGUI = new ConnectingGUI();
+    public boolean connect(String username, String password){
+      /*  ConnectingGUI conGUI = new ConnectingGUI();
         conGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         //TO-DO: connection with server
@@ -307,16 +305,12 @@ public class Client{
         //ELSE IF Wrong username or password
         conGUI.badUserData();
         //ELSE
-        conGUI.connectionFailed();
+        conGUI.connectionFailed();*/
+        return false;
     }
     public static void main(String[] args) {
-       // Client client = new Client();
-        EpicList<String> test = new EpicList<String>();
-        test.add("vienas");
-        test.add("du");
-  
-                
-       // EditorGUI eGUI = new EditorGUI(client, EditorType.EDIT);
+        Client client = new Client();
+        client.test = "DSDS";
         
     }
     
