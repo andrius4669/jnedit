@@ -245,8 +245,14 @@ public class Client{
     public void deleteFile(String name) {
 	   sendString(String.format("rmf %s\n", name));
     }
-    public void updateFile(String name, int at, String newText){
-	    /* ??? */
+    public void updateFile(String name){
+	    FileBuffer f = findBuf(name);	/* filebuffer already edited */
+	    if(f == null) return;
+	    StringBuilder sb = new StringBuilder();
+	    sb.append("efsend ").append(name).append(' ');
+	    f.putEscapedText(sb);
+	    sb.append('\n');
+	    sendString(sb.toString());
     }
     private void checkInputBuffer() {
 	    	int index;
