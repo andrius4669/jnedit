@@ -230,6 +230,13 @@ public class ServerState {
 				broadcastln(ccmd, c);
 				break;
 			}
+			case "rmf":
+			{
+				ServerBuffer buf = findBuf(arg);
+				buffers.remove(buf);
+				if(buf != null) broadcastln(ccmd, c);
+				break;
+			}
 		}
 	}
 	

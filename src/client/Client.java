@@ -221,7 +221,13 @@ public class Client{
 				editor.updateFileList();
 				break;
 			}
-                        //TO-DO:ANDRIUI - Gauti info kai ištrinamas failas
+			case "rmf":
+			{
+				FileBuffer f = findBuf(arg);
+				files.remove(f);
+				// TODO for domas: update gui
+				break;
+			}
 		}
     }
     
@@ -236,13 +242,11 @@ public class Client{
 	    addSubscription(name);
 	    sendString(String.format("makef %s\n", name));
     }
-    //TO-DO:ANDRIUI failo trinimas
     public void deleteFile(String name) {
-	   
+	   sendString(String.format("rmf %s\n", name));
     }
-    //TO-DO:ANDRIUI update file
     public void updateFile(String name, int at, String newText){
-        
+	    /* ??? */
     }
     private void checkInputBuffer() {
 	    	int index;
