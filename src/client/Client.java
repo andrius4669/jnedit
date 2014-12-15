@@ -240,6 +240,10 @@ public class Client{
     public void deleteFile(String name) {
 	   
     }
+    //TO-DO:ANDRIUI update file
+    public void updateFile(String name){
+        
+    }
     private void checkInputBuffer() {
 	    	int index;
 		boolean needcheck;
