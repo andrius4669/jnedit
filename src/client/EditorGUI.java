@@ -151,7 +151,8 @@ public class EditorGUI extends JFrame {
     }
     private void openFile(int id){
         String name = (String) fileListModel.getElementAt(id);
-        for(FileBuffer fb : client.files){
+        for(int i = 0; i < client.files.size(); i++){
+            FileBuffer fb = client.files.get(i);
             if(fb.getName().equals(name)){
                 client.openFile(name);
                 textArea.setText(fb.buf.toString());
@@ -187,8 +188,10 @@ public class EditorGUI extends JFrame {
     }
     public void updateFileList(){
         fileListModel.clear();
-        for(FileBuffer fb:client.files)
+        for(int i = 0; i < client.files.size(); i++){
+            FileBuffer fb = client.files.get(i);
             fileListModel.addElement(fb.getName());
+        }
     }
     public void addFile(String name){
         client.createFile(name);

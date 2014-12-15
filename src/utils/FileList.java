@@ -33,6 +33,7 @@ package utils;
 public interface FileList<T> {
     void add(T t);
     void remove(int id);
+    void remove(T t);
     int size();
     T get(int id);
     void clear();

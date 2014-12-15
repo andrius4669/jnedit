@@ -18,7 +18,7 @@ public class Client{
     public InputStream sockin;
     final private StringBuffer inbuf = new StringBuffer();
     final public ArrayList<User> users = new ArrayList<>();
-    final public ArrayList<FileBuffer> files = new ArrayList<>();
+    final public FileBuffers<FileBuffer> files = new FileBuffers<>();
     final public ArrayList<String> sfiles = new ArrayList<>();	/* subscriptions/files opened by us */
     
     public Client(){
@@ -39,7 +39,7 @@ public class Client{
     
     public void addSubscription(String name) {
 	    for(String s: sfiles) if(s.equals(name)) return;
-	    for(FileBuffer f: files) if(f.getName().equals(name)) { sfiles.add(name); return; }
+	    for(int i = 0; i < files.size(); i++) if(files.get(i).getName().equals(name)) { sfiles.add(name); return; }
     }
     
     public void unsubscribe(String name) {
@@ -50,12 +50,12 @@ public class Client{
     }
     
     public FileBuffer findBuf(String name) {
-	    for(FileBuffer b: files) if(b.getName().equals(name)) return b;
+	    for(int i = 0; i < files.size(); i++) if(files.get(i).getName().equals(name)) return files.get(i);
 	    return null;
     }
     
     public void mkBuf(String name) {
-	    for(FileBuffer b: files) if(b.getName().equals(name)) return;
+	    for(int i = 0; i < files.size(); i++) if(files.get(i).equals(name)) return;
 	    files.add(new FileBuffer(name));
     }
     
@@ -215,7 +215,7 @@ public class Client{
 			case "makef":
 			{
 				boolean found = false;
-				for(FileBuffer f: files) if(f.getName().equals(arg)) { found = true; break; }
+				for(int i = 0; i < files.size(); i++) if(files.get(i).getName().equals(arg)) { found = true; break; }
 				if(found) break;
 				files.add(new FileBuffer(arg));
 				editor.updateFileList();
@@ -359,13 +359,6 @@ public class Client{
     }
     public static void main(String[] args) {
         Client client = new Client();
-        FileBuffers<FileBuffer> buffers =new FileBuffers<>();
-        buffers.add(new FileBuffer("1test"));
-        buffers.add(new FileBuffer("2dfsd"));
-        buffers.add(new FileBuffer("3fsdf"));
-        buffers.remove(1);
-        for(int i = 0; i < buffers.size(); i++)
-            System.out.println(buffers.get(i).getName());
     }
     
     

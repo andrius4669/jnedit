@@ -57,7 +57,7 @@ public class FileBuffers<T> implements FileList<T> {
             temp[i] = elements[i];
         elements = temp;
     }
-
+    
     @Override
     public int size() {
         return size;
@@ -73,6 +73,17 @@ public class FileBuffers<T> implements FileList<T> {
     public void clear() {
         elements = null;
         size = 0;
+    }
+
+    @Override
+    public void remove(T t) {
+        for(int i = 0; i < size; i++)
+            if(elements[i] == t){
+                remove(i);
+                return;
+            }
+            
+        
     }
     
 }
