@@ -9,12 +9,8 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
 
 /**
  *
