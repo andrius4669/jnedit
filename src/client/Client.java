@@ -226,6 +226,7 @@ public class Client{
 				FileBuffer f = findBuf(arg);
 				files.remove(f);
 				editor.removeFileFromList(f.getName());
+				unsubscribe(arg);
 				break;
 			}
 		}

@@ -79,10 +79,12 @@ public class ServerState {
 	
 	public void sendString(SocketChannel s, String str)
 	{
-		ByteBuffer b = ByteBuffer.allocate(1500);
-		b.clear();
-		b.put(str.getBytes());
-		b.flip();
+		//ByteBuffer b = ByteBuffer.allocate(500000);
+		
+		ByteBuffer b = ByteBuffer.wrap(str.getBytes());
+		//b.clear();
+		//b.put(str.getBytes());
+		//b.flip();
 		while(b.hasRemaining()) {
 			try { s.write(b); }
 			catch(IOException e) { System.out.printf("write: %s\n", e.toString()); break; }
